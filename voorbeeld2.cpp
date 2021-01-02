@@ -1,6 +1,6 @@
 //voorbeeld2.cpp
 //voorbeeld van een subscriper
-//builden met g++ -o <naam van executable> client1.cpp PracticalSocket.cpp -pthread
+//builden met g++ -o <naam van executable> voorbeeld2.cpp PracticalSocket.cpp -pthread
 
 #include "pubsub.h"
 #include <iostream>

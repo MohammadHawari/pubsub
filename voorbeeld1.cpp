@@ -1,6 +1,6 @@
 //voorbeeld1.cpp
 //voorbeeld programma voor een publisher
-//builden met g++ -o <naam van executable> client1.cpp PracticalSocket.cpp 
+//builden met g++ -o <naam van executable> voorbeeld1.cpp PracticalSocket.cpp 
 
 #include "pubsub.h"
 #include <iostream>
