@@ -644,7 +644,7 @@ int UDPSocket::recvFrom(void *buffer, int bufferLen,
 		   throw SocketTimedOutException("socket timed out");
 		else
 
-			throw SocketException("Receive failed (recvfrom())");
+			throw SocketException("recvFrom failed");
   }
   sourceAddress = SocketAddress((sockaddr *)&clntAddr, addrLen);
 

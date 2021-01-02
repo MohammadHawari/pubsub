@@ -4,7 +4,7 @@
 #include <string>
 using namespace std;
 
-
+//******* CLASS TOPIC  ***************************************//
 class publisher{
 private:
 	SocketAddress remote_addr;
@@ -13,12 +13,10 @@ private:
 	
 	
 public:
-	publisher(string topic, string ipadr = "127.0.0.1", int port = 8080):topic(topic), remote_addr(ipadr, port, SocketAddress::UDP_SOCKET) noexcept(false) {
-
-	}
+	publisher(string topic, string ipadr = "192.168.2.6", int port = 8080):topic(topic), remote_addr(ipadr.data(), port, SocketAddress::UDP_SOCKET) { 	}
 	
 	void send(string message){
-		string message = "publish " + topic + " " + message;
+		message = "publish " + topic + " " + message;
 		try{
 			sock.sendTo(message.data(), message.size(), remote_addr );
 		}
@@ -26,39 +24,46 @@ public:
 			cerr << "ERROR sending " << message << " --> " << e.what() << endl;
 		}
 	}
-};
+}; //class publisher
 
 
 
-void onrecieve(string message);
-
-class topic{
+//******** class SUBSCRIPTION *********************************//
+class subscription{
 	
 private:
-	
 	string topic_string;
 	UDPSocket sock;
-	
+	void (*call_back)(string);
+	SocketAddress remote_addr;
+		
 	void wait_for_messages(){
-		while(true){
-			try{
-				SocketAddress from_adr;
-				int n = sock.recvFrom(buffer, 1024, from_adr);
-				buffer[n] = '\0';
-				onrecieve(buffer);
-				
-			}
-			catch(SocketException& e) {
-				cerr << "ERROR recieving messages from " << topic  << " --> " << e.what() << endl;
-			}
-			
+		char buffer[128];
+		try{
+			while(true){			
+					SocketAddress from_adr;
+					int n = sock.recvFrom(buffer, 128, from_adr);
+					if (n == 0) break;
+					buffer[n] = '\0';
+					call_back(buffer);
+				}		
+		} 	
+		catch(SocketException& e) {
+			//socket has closed, jump out of while-loop
 		}
 	}
 	
 public:
+	subscription(string s, void (*f)(string), string ipadr = "192.168.2.6", int port = 8080):topic_string (s),  call_back(f), remote_addr(ipadr.data(), port, SocketAddress::UDP_SOCKET) {
+		sock.connect(remote_addr);
+		subscribe();	
+		thread t(&subscription::wait_for_messages, this);
+		t.detach();
+	}
 	
-	topic(string s, string ipadr = "127.0.0.1", int port = 8080):topic_string (s), remote_addr(ipadr, port, SocketAddress::UDP_SOCKET) noexcept(false) {
-		thread t(wait_for_messages, this).detach();
+	~subscription(){ 		
+		unsubscribe(); 
+		sock.close();
 	}
 	
 	void subscribe(){
@@ -67,7 +72,7 @@ public:
 			sock.sendTo(message.data(), message.size(), remote_addr );
 		}
 		catch(SocketException& e) {
-			cerr << "ERROR subscribing to " << topic  << " --> " << e.what() << endl;
+			cerr << "ERROR subscribing to " << topic_string  << " --> " << e.what() << endl;
 		}
 	}
 	
@@ -77,10 +82,8 @@ public:
 			sock.sendTo(message.data(), message.size(), remote_addr );
 		}
 		catch(SocketException& e) {
-			cerr << "ERROR unsubscribing from " << topic  << " --> " << e.what() << endl;
+			cerr << "ERROR unsubscribing from " << topic_string  << " --> " << e.what() << endl;
 		}
 	}
-	
-	
-};
+};  //class subscription
 		
