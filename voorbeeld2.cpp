@@ -6,20 +6,22 @@
 #include <iostream>
 
 //maak een functie die aangeeft wat er dient te gebeuren indien een message binnenkomt
-void onrecieve(string s){
-	cout << s << endl;
+//een void-functie met een string-parameter
+//naam meg je zelf kiezen
+void onrecieve(string message){
+	cout << message << endl;
 }
 
 int main(){
-	
+
 	//maak een subscription met twee parameters 1. de naam van de topic 2. de naam van de functie
-	//optioneel 3. ipadres en 4. poortnummer van de server
+	//de topic-naam mag geen spaties bevatten.
 	subscription s("mytopic", onrecieve);
-	
+
 	cout << "waiting for messages" << endl;
 	cout << "type \'s\' to stop"  << endl;
 	cin.get();
-	
-	
+
+
 	return 0;
 }
