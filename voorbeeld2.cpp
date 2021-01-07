@@ -5,10 +5,11 @@
 #include "pubsub.h"
 #include <iostream>
 
-//maak een functie die aangeeft wat er dient te gebeuren indien een message binnenkomt
-//een void-functie met een string-parameter
-//naam meg je zelf kiezen
+
+// maak een void-functie met een string-parameter en een zelfgekozen naam
 void onrecieve(string message){
+	
+	//schrijf hier de actie die moet worden uitgevoerd met een binnenkomende message
 	cout << message << endl;
 }
 
