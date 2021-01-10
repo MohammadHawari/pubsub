@@ -4,7 +4,9 @@
 #include <string>
 using namespace std;
 
-//******* CLASS TOPIC  ***************************************//
+#define server_ip 
+
+//******* CLASS PUBLISHER  ***************************************//
 class publisher{
 private:
 	SocketAddress remote_addr;
@@ -13,7 +15,7 @@ private:
 	
 	
 public:
-	publisher(string topic, string ipadr = "192.168.2.6", int port = 8080):topic(topic), remote_addr(ipadr.data(), port, SocketAddress::UDP_SOCKET) { 	}
+	publisher(string topic, string ipadr = "77.172.149.184", int port = 8401):topic(topic), remote_addr(ipadr.data(), port, SocketAddress::UDP_SOCKET) { 	}
 	
 	void send(string message){
 		message = "publish " + topic + " " + message;
@@ -54,7 +56,9 @@ private:
 	}
 	
 public:
-	subscription(string s, void (*f)(string), string ipadr = "192.168.2.6", int port = 8080):topic_string (s),  call_back(f), remote_addr(ipadr.data(), port, SocketAddress::UDP_SOCKET) {
+	subscription(string s, void (*f)(string), string ipadr = "77.172.149.184", int port = 8401):
+	topic_string (s),  call_back(f), 
+	remote_addr(ipadr.data(), port, SocketAddress::UDP_SOCKET) {
 		sock.connect(remote_addr);
 		subscribe();	
 		thread t(&subscription::wait_for_messages, this);
